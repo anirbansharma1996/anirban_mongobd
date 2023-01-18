@@ -9,7 +9,6 @@ const MONGOURL = process.env.MONGOURL;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.get("/", (req, res) => res.send("hello"));
 ///////////// SIGN UP ///////////////////
 app.post("/signup", async (req, res) => {
