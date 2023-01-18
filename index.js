@@ -44,7 +44,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-////////////////////////////////////https://mock-data-mongodb.onrender.com//////////////////////
+//////////////////////////////////// https://mock-data-mongodb.onrender.com//////////////////////
 const connect = async () => {
   return new mongoose.connect(MONGOURL);
 };
@@ -54,7 +54,7 @@ app.listen(port, async () => {
       console.log("connected with db");
     })
     .catch((err) => {
-      console.log("not connected");
+      console.log("not connected",err);
     });
   console.log("server started on 8080");
 });
