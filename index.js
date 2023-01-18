@@ -16,10 +16,10 @@ app.post("/signup", async (req, res) => {
   try {
     const user = new Usermodel({ name, email, password });
     await user.save();
-    return res.status(201).send("Signup Successful");
+     res.status(201).send("Signup Successful");
   } catch (error) {
     console.log(error.message);
-    return res.status(404).send(error.message);
+     res.status(404).send(error);
   }
 });
 app.get("/signup",async(req,res)=>{
@@ -44,7 +44,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-//////////////////////////////////// https://mock-data-mongodb.onrender.com//////////////////////
+//////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 const connect = async () => {
   return new mongoose.connect(MONGOURL);
 };
