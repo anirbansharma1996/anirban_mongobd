@@ -1,6 +1,7 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
 const Usermodel = require("./Models/user.model");
+//////////////////////////////////////////////////////
 require('dotenv').config()
 const port = process.env.PORT ;
 const MONGOURL = process.env.MONGOURL;
@@ -19,9 +20,15 @@ app.post("/signup", async (req, res) => {
     return res.status(201).send("Signup Successful");
   } catch (error) {
     console.log(error.message);
-    return res.status(404).send("Signup Failed");
+    return res.status(404).send(error.message);
   }
 });
+app.get("/signup",async(req,res)=>{
+    const user= await Usermodel.find()
+    res.send(user)
+})
+
+
 //////////// LOGIN //////////////
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -38,9 +45,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
-
-////////////////////////////////////
+////////////////////////////////////https://mock-data-mongodb.onrender.com//////////////////////
 const connect = async () => {
   return new mongoose.connect(MONGOURL);
 };
