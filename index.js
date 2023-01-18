@@ -9,7 +9,7 @@ const MONGOURL = process.env.MONGOURL;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.get("/", (req, res) => res.send("hello"));
+app.get("/", (req, res) => res.send("connect"));
 ///////////// SIGN UP ///////////////////
 app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
@@ -19,6 +19,7 @@ app.post("/signup", async (req, res) => {
     //  await Usermodel.create({name, email, password})
      res.status(201).send("Signup Successful");
   } catch (error) {
+
     console.log(error.message);
      res.status(404).send(error);
   }
@@ -46,8 +47,9 @@ app.post("/login", async (req, res) => {
 });
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
+
 const connect = async () => {
-  return new mongoose.connect(MONGOURL);
+  return new mongoose.connect("mongodb+srv://anirban:anirban2022@cluster0.pdsxni8.mongodb.net/revision");
 };
 app.listen(port, async () => {
   await connect()
