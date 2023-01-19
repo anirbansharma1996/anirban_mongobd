@@ -1,12 +1,11 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
 const Usermodel = require("./Models/user.model");
-//////////////////////////////////////////////////////
 require('dotenv').config()
 const port = process.env.PORT ;
 const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
-
+//////////////////////////////////////////////////////
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -18,8 +17,7 @@ app.post("/signup", async (req, res) => {
   try {
      const user = new Usermodel({ name, email, password:hash });
      await user.save();
-    //  await Usermodel.create({name, email, password})
-     res.status(201).send("Signup Successful");
+     res.status(201).send({Message:"Signup Successful",user});
   } catch (error) {
 
     console.log(error.message);
