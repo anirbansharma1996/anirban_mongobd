@@ -4,7 +4,8 @@ const Usermodel = require("./Models/user.model");
 //////////////////////////////////////////////////////
 require('dotenv').config()
 const port = process.env.PORT ;
-const MONGOURL = process.env.MONGOURL;
+const jwt = require("jsonwebtoken");
+
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -24,27 +25,44 @@ app.post("/signup", async (req, res) => {
      res.status(404).send(error);
   }
 });
+/////////////////////////////////////////////
 app.get("/signup",async(req,res)=>{
     const user= await Usermodel.find()
     res.send(user)
 })
-
-
 //////////// LOGIN //////////////
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const present = await Usermodel.findOne({ email, password });
-    if (present) {
-      return res.status(201).send({ message: "login Successful", present });
-    } else {
-      return res.status(404).send("Signup First");
+    const { email, password } = req.body;
+    const user = await Usermodel.findOne({ email, password });
+    if (user) {
+      let token = jwt.sign(
+        {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+        "MINIMUM1234",
+        {
+          expiresIn: "7 Days",
+        }
+      );
+      const refreshToken = jwt.sign(
+        {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+        "MAXIMUM1234",
+        {
+          expiresIn: "28 days",
+        }
+      );
+      return res
+        .status(200)
+        .send({ message: "Login successful", token, refreshToken });
     }
-  } catch (error) {
-    console.log(error);
-    res.send("Invalid Information");
-  }
-});
+    return res.status(401).send("Try Again");
+  });
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
