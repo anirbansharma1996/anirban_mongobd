@@ -5,7 +5,7 @@ const Usermodel = require("./Models/user.model");
 require('dotenv').config()
 const port = process.env.PORT ;
 const jwt = require("jsonwebtoken");
-
+const argon2 = require("argon2");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -14,8 +14,9 @@ app.get("/", (req, res) => res.send("connect"));
 ///////////// SIGN UP ///////////////////
 app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
+  const hash = await argon2.hash(password); 
   try {
-     const user = new Usermodel({ name, email, password });
+     const user = new Usermodel({ name, email, password:hash });
      await user.save();
     //  await Usermodel.create({name, email, password})
      res.status(201).send("Signup Successful");
@@ -25,26 +26,21 @@ app.post("/signup", async (req, res) => {
      res.status(404).send(error);
   }
 });
-/////////////////////////////////////////////
-app.get("/signup",async(req,res)=>{
-    const user= await Usermodel.find()
-    res.send(user)
-})
+
 //////////// LOGIN //////////////
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
-    const user = await Usermodel.findOne({ email, password });
-    if (user) {
-      let token = jwt.sign(
+  
+    const user = await Usermodel.findOne({ email });
+    if (await argon2.verify(user.password, password)) {
+      const token = jwt.sign(
         {
           id: user._id,
           name: user.name,
           email: user.email,
         },
-        "MINIMUM1234",
-        {
-          expiresIn: "7 Days",
-        }
+        "ANIRBAN1234",
+        { expiresIn: "7 days" }
       );
       const refreshToken = jwt.sign(
         {
@@ -52,16 +48,12 @@ app.post("/login", async (req, res) => {
           name: user.name,
           email: user.email,
         },
-        "MAXIMUM1234",
-        {
-          expiresIn: "28 days",
-        }
+        "REFRESHTOKEN",
+        { expiresIn: "28 days" }
       );
-      return res
-        .status(200)
-        .send({ message: "Login successful", token, refreshToken });
+      return res.send({ message: "Login Successful", token, refreshToken });
     }
-    return res.status(401).send("Try Again");
+    return res.status(401).send("Invalid User");
   });
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
