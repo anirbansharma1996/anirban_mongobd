@@ -5,8 +5,10 @@ require('dotenv').config()
 const port = process.env.PORT ;
 const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
+const cors=require("cors")
 //////////////////////////////////////////////////////
 const app = express();
+app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.get("/", (req, res) => res.send("connect"));
@@ -17,7 +19,7 @@ app.post("/signup", async (req, res) => {
   try {
      const user = new Usermodel({ name, email, password:hash });
      await user.save();
-     res.status(201).send({Message:"Signup Successful",user});
+     res.status(201).send({Message:"Signup Successful"});
   } catch (error) {
 
     console.log(error.message);
