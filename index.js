@@ -58,6 +58,27 @@ app.post("/login", async (req, res) => {
   
 });
 
+ ////////////////////// single-user-login ///////////////////
+app.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  //------------------------------------------
+  const token = req.headers["authorization"];
+
+  if (!token) {
+    return res.status(401).send("Unauthorized");
+  }
+  //-----------------------------------------------
+  try {
+    const verification = jwt.verify(token, "ANIRBAN1234");
+    if (verification) {
+      const user = await Usermodel.findOne({ _id: id });
+      return res.send(user);
+    }
+  } catch (e) {
+    return res.send(e.message);
+  }
+});
+
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
 const connect = async () => {
@@ -75,3 +96,4 @@ app.listen(port, async () => {
     });
   console.log("server started on 8080");
 });
+
