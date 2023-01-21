@@ -19,7 +19,7 @@ app.post("/signup", async (req, res) => {
   try {
     const user = new Usermodel({ name, email, password: hash });
     await user.save();
-    res.status(201).send({ Message: "Signup Successful" });
+    res.status(201).send({ Message: "Signup Successful",id:user._id });
   } catch (error) {
     console.log(error.message);
     res.status(404).send(error);
