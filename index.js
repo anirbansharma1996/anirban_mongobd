@@ -89,6 +89,14 @@ app.post("/admin/postjobs", async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+app.get("/admin/getjobs", async (req, res) => {
+  try {
+    const joblist = await Jobsmodel.find();
+    res.status(201).send(joblist);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
