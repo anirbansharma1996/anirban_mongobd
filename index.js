@@ -90,14 +90,22 @@ app.post("/admin/postjobs", async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+//////////////////////////////////////////////////////////////
 app.get("/admin/getjobs", async (req, res) => {
+  const {location} = req.query
+  console.log(req.query)
+  let filteredLocation={}
+  if(location){
+     filteredLocation = {location:location}
+  }
   try {
-    const joblist = await Jobsmodel.find();
+    const joblist = await Jobsmodel.find(filteredLocation);
     res.status(201).send(joblist);
   } catch (error) {
     res.status(404).send(error.message);
   }
 });
+//////////////////////////////////////////////////////
 app.delete("/delete/:id", async (req, res) => {
    const {id}= req.params
   try {
@@ -107,6 +115,7 @@ app.delete("/delete/:id", async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
