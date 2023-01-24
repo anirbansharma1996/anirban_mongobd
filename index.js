@@ -92,14 +92,8 @@ app.post("/admin/postjobs", async (req, res) => {
 });
 //////////////////////////////////////////////////////////////
 app.get("/admin/getjobs", async (req, res) => {
-  const {location} = req.query
-  console.log(req.query)
-  let filteredLocation={}
-  if(location){
-     filteredLocation = {location:location}
-  }
   try {
-    const joblist = await Jobsmodel.find(filteredLocation);
+    const joblist = await Jobsmodel.find({});
     res.status(201).send(joblist);
   } catch (error) {
     res.status(404).send(error.message);
