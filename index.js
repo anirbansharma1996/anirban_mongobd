@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const cors = require("cors");
 const Jobsmodel = require("./Models/job.model");
+const { query } = require("express");
 //////////////////////////////////////////////////////
 const app = express();
 app.use(cors());
@@ -93,6 +94,15 @@ app.get("/admin/getjobs", async (req, res) => {
   try {
     const joblist = await Jobsmodel.find();
     res.status(201).send(joblist);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+app.delete("/delete/:id", async (req, res) => {
+   const {id}= req.params
+  try {
+    const joblist = await Jobsmodel.findByIdAndDelete({_id:id});
+    res.status(201).send("deleted successfully");
   } catch (error) {
     res.status(404).send(error.message);
   }
