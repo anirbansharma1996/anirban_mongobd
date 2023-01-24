@@ -6,6 +6,7 @@ const port = process.env.PORT;
 const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const cors = require("cors");
+const Jobsmodel = require("./Models/job.model");
 //////////////////////////////////////////////////////
 const app = express();
 app.use(cors());
@@ -19,7 +20,7 @@ app.post("/signup", async (req, res) => {
   try {
     const user = new Usermodel({ name, email, password: hash });
     await user.save();
-    res.status(201).send({ Message: "Signup Successful",id:user._id });
+    res.status(201).send({ Message: "Signup Successful", id: user._id });
   } catch (error) {
     console.log(error.message);
     res.status(404).send(error);
@@ -31,34 +32,33 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await Usermodel.findOne({ email });
- if(user){
-   if (await argon2.verify(user.password, password)) {
-     const token = jwt.sign(
-       {
-         id: user._id,
-         name: user.name,
-         email: user.email,
-       },
-       "ANIRBAN1234",
-       { expiresIn: "7 days" }
-     );
-     const refreshToken = jwt.sign(
-       {
-         id: user._id,
-         name: user.name,
-         email: user.email,
-       },
-       "REFRESHTOKEN",
-       { expiresIn: "28 days" }
-     );
-     return res.send({ message: "Login Successful", token, refreshToken });
-   } 
- }
-    return res.status(401).send("Invalid User");
-  
+  if (user) {
+    if (await argon2.verify(user.password, password)) {
+      const token = jwt.sign(
+        {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+        "ANIRBAN1234",
+        { expiresIn: "7 days" }
+      );
+      const refreshToken = jwt.sign(
+        {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+        "REFRESHTOKEN",
+        { expiresIn: "28 days" }
+      );
+      return res.send({ message: "Login Successful", token, refreshToken });
+    }
+  }
+  return res.status(401).send("Invalid User");
 });
 
- ////////////////////// single-user-login ///////////////////
+////////////////////// single-user-login ///////////////////
 app.get("/user/:id", async (req, res) => {
   const { id } = req.params;
   //------------------------------------------
@@ -79,6 +79,17 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+app.post("/admin/postjobs", async (req, res) => {
+  const { company, position, contract, location } = req.body;
+  try {
+    const jobs = new Jobsmodel({ company, position, contract, location });
+    await jobs.save();
+    res.status(201).send({ message: "Job created Successfully", jobs });
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
 const connect = async () => {
@@ -96,4 +107,3 @@ app.listen(port, async () => {
     });
   console.log("server started on 8080");
 });
-
