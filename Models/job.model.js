@@ -5,7 +5,7 @@ const JobsSchema = new Schema({
   position: String,
   contract: String,
   location: String,
-  ctc:String,
+  ctc:Number,
 });
 const Jobsmodel = model("jobs", JobsSchema);
 module.exports = Jobsmodel;
