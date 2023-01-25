@@ -27,6 +27,15 @@ app.post("/signup", async (req, res) => {
     res.status(404).send(error);
   }
 });
+app.get("/student", (req, res) => {
+  Usermodel.find({}, (err, users) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(users);
+    }
+  });
+});
 
 //////////// LOGIN //////////////
 app.post("/login", async (req, res) => {
@@ -80,9 +89,9 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 app.post("/admin/postjobs", async (req, res) => {
-  const { company, position, contract, location,ctc } = req.body;
+  const { company, position, contract, location, ctc } = req.body;
   try {
-    const jobs = new Jobsmodel({ company, position, contract, location ,ctc});
+    const jobs = new Jobsmodel({ company, position, contract, location, ctc });
     await jobs.save();
     res.status(201).send({ message: "Job created Successfully", jobs });
   } catch (error) {
@@ -100,30 +109,29 @@ app.get("/admin/getjobs", async (req, res) => {
 });
 //////////////////////////////////////////////////////
 app.delete("/delete/:id", async (req, res) => {
-   const {id}= req.params
+  const { id } = req.params;
   try {
-    const joblist = await Jobsmodel.findByIdAndDelete({_id:id});
+    const joblist = await Jobsmodel.findByIdAndDelete({ _id: id });
     res.status(201).send("deleted successfully");
   } catch (error) {
     res.status(404).send(error.message);
   }
 });
 app.patch("/update/:id", async (req, res) => {
-  const {id}= req.params
-  const {ctc}=req.body
- try {
-   const joblist = await Jobsmodel.findByIdAndUpdate({_id:id},{ctc});
-   res.status(201).send(joblist);
- } catch (error) {
-   res.status(404).send(error.message);
- }
+  const { id } = req.params;
+  const { ctc } = req.body;
+  try {
+    const joblist = await Jobsmodel.findByIdAndUpdate({ _id: id }, { ctc });
+    res.status(201).send(joblist);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
 });
 app.post("/logout", async (req, res) => {
   const token = req.headers.authorization;
   blacklist.push(token);
   return res.send("Logout Successfully");
 });
-
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
