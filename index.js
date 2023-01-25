@@ -81,9 +81,9 @@ app.get("/user/:id", async (req, res) => {
 });
 
 app.post("/admin/postjobs", async (req, res) => {
-  const { company, position, contract, location } = req.body;
+  const { company, position, contract, location,ctc } = req.body;
   try {
-    const jobs = new Jobsmodel({ company, position, contract, location });
+    const jobs = new Jobsmodel({ company, position, contract, location ,ctc});
     await jobs.save();
     res.status(201).send({ message: "Job created Successfully", jobs });
   } catch (error) {
@@ -108,6 +108,12 @@ app.delete("/delete/:id", async (req, res) => {
   } catch (error) {
     res.status(404).send(error.message);
   }
+});
+
+app.post("/logout", async (req, res) => {
+  const token = req.headers.authorization;
+  blacklist.push(token);
+  return res.send("Logout Successfully");
 });
 
 
