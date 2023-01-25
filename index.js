@@ -109,6 +109,17 @@ app.delete("/delete/:id", async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+app.patch("/update/:id", async (req, res) => {
+  const {id}= req.params
+  const {ctc}=req.body
+  console.log(ctc)
+ try {
+   const joblist = await Jobsmodel.findByIdAndUpdate({_id:id},{ctc});
+   res.status(201).send(joblist);
+ } catch (error) {
+   res.status(404).send(error.message);
+ }
+});
 
 app.post("/logout", async (req, res) => {
   const token = req.headers.authorization;
