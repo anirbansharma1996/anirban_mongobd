@@ -79,7 +79,6 @@ app.get("/user/:id", async (req, res) => {
     return res.send(e.message);
   }
 });
-
 app.post("/admin/postjobs", async (req, res) => {
   const { company, position, contract, location,ctc } = req.body;
   try {
