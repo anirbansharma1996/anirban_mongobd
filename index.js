@@ -7,7 +7,8 @@ const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const cors = require("cors");
 const Jobsmodel = require("./Models/job.model");
-const { query } = require("express");
+const PlayModel = require("./Models/play.model");
+
 //////////////////////////////////////////////////////
 const app = express();
 app.use(cors());
@@ -132,6 +133,20 @@ app.post("/logout", async (req, res) => {
   blacklist.push(token);
   return res.send("Logout Successfully");
 });
+
+app.post("/game", async (req, res) => {
+  const { name,level } = req.body;
+  const userdata = new PlayModel({ name });
+  if (userdata) {
+    await userdata.save();
+    return res.send({name:userdata.name,id:userdata._id,level:level });
+  }
+  res.status(404).send("something went wrong");
+});
+
+
+
+
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
