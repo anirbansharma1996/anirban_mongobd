@@ -3,7 +3,7 @@ const { model, Schema } = require("mongoose");
 const PlaySchema = new Schema({
   name: String,
   score: {
-    total: 0,
+    total: { type: Number, default: 0 },
     scores: [],
   },
 });
