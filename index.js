@@ -151,7 +151,7 @@ app.get("/random", function (req, res) {
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const n = characters.length;
     let word = "";
-    if (level === "low") {
+    if (level === "easy") {
       for (let i = 0; i < 5; i++) {
         word += characters[Math.floor(Math.random() * n)];
       }
@@ -159,7 +159,7 @@ app.get("/random", function (req, res) {
       for (let i = 0; i < 7; i++) {
         word += characters[Math.floor(Math.random() * n)];
       }
-    } else if (level === "high") {
+    } else if (level === "hard") {
       for (let i = 0; i < 10; i++) {
         word += characters[Math.floor(Math.random() * n)];
       }
