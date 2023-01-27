@@ -144,7 +144,51 @@ app.post("/game", async (req, res) => {
   res.status(404).send("something went wrong");
 });
 
+app.get('/random',function(req, res) {
+    const{level}=req.body;
+    try{
+        const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const n = characters.length;
+        let word=""
+        if(level==="low"){
+          for(let i=0;i<5;i++){
+            word+=characters[Math.floor(Math.random()*n)]
+          }
+        }
+        else if(level==="medium"){
+            for(let i=0;i<7;i++){
+                word+=characters[Math.floor(Math.random()*n)]
+              }
+        }
+        else if(level==="high"){
+            for(let i=0;i<10;i++){
+                word+=characters[Math.floor(Math.random()*n)]
+              }
+        }
+        res.send({word:word})
+        return;
+    }
+    catch(err){
+        res.send(err.message)
+    } 
+});
 
+app.post('/score/:id',async(req,res)=>{
+    const{id}=req.params;
+    const{score,level}=req.body;
+    try {
+        let user = await PlayModel.findOne({_id:id});
+        let update = user.score.total+ Number(score);
+        let scores = user.score.scores;
+        scores.push({level:level,score})
+        let newData = {total:update,scores:scores}
+        await PlayModel.findByIdAndUpdate({_id:id},{score:newData});
+        let newUser = await PlayModel.findOne({_id:id});
+        return res.send(newUser)
+    } catch (error) {
+        
+    }
+})
 
 
 
