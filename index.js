@@ -144,7 +144,7 @@ app.post("/game", async (req, res) => {
   res.status(404).send("something went wrong");
 });
 
-app.get("/random", function (req, res) {
+app.post("/random", function (req, res) {
   const { level } = req.body;
   try {
     const characters =
