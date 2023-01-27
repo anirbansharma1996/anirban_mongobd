@@ -135,62 +135,56 @@ app.post("/logout", async (req, res) => {
 });
 
 app.post("/game", async (req, res) => {
-  const { name,level } = req.body;
+  const { name, level } = req.body;
   const userdata = new PlayModel({ name });
   if (userdata) {
     await userdata.save();
-    return res.send({name:userdata.name,id:userdata._id,level:level });
+    return res.send({ name: userdata.name, id: userdata._id, level: level });
   }
   res.status(404).send("something went wrong");
 });
 
-app.post('/random',function(req, res) {
-    const{level}=req.body;
-    try{
-        const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const n = characters.length;
-        let word=""
-        if(level==="low"){
-          for(let i=0;i<5;i++){
-            word+=characters[Math.floor(Math.random()*n)]
-          }
-        }
-        else if(level==="medium"){
-            for(let i=0;i<7;i++){
-                word+=characters[Math.floor(Math.random()*n)]
-              }
-        }
-        else if(level==="high"){
-            for(let i=0;i<10;i++){
-                word+=characters[Math.floor(Math.random()*n)]
-              }
-        }
-        res.send({word:word})
-        return;
+app.get("/random", function (req, res) {
+  const { level } = req.body;
+  try {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const n = characters.length;
+    let word = "";
+    if (level === "low") {
+      for (let i = 0; i < 5; i++) {
+        word += characters[Math.floor(Math.random() * n)];
+      }
+    } else if (level === "medium") {
+      for (let i = 0; i < 7; i++) {
+        word += characters[Math.floor(Math.random() * n)];
+      }
+    } else if (level === "high") {
+      for (let i = 0; i < 10; i++) {
+        word += characters[Math.floor(Math.random() * n)];
+      }
     }
-    catch(err){
-        res.send(err.message)
-    } 
+    res.send({ word: word });
+    return;
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
-app.post('/score/:id',async(req,res)=>{
-    const{id}=req.params;
-    const{score,level}=req.body;
-    try {
-        let user = await PlayModel.findOne({_id:id});
-        let update = user.score.total+ Number(score);
-        let scores = user.score.scores;
-        scores.push({level:level,score})
-        let newData = {total:update,scores:scores}
-        await PlayModel.findByIdAndUpdate({_id:id},{score:newData});
-        let newUser = await PlayModel.findOne({_id:id});
-        return res.send(newUser)
-    } catch (error) {
-        
-    }
-})
-
-
+app.post("/score/:id", async (req, res) => {
+  const { id } = req.params;
+  const { score, level } = req.body;
+  try {
+    let user = await PlayModel.findOne({ _id: id });
+    let update = user.score.total + Number(score);
+    let scores = user.score.scores;
+    scores.push({ level: level, score });
+    let newData = { total: update, scores: scores };
+    await PlayModel.findByIdAndUpdate({ _id: id }, { score: newData });
+    let newUser = await PlayModel.findOne({ _id: id });
+    return res.send(newUser);
+  } catch (error) {}
+});
 
 //////////////////////////////////// https://mock-data-mongodb.onrender.com //////////////////////
 
